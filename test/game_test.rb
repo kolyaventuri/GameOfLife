@@ -77,7 +77,9 @@ class GameTest < Minitest::Test
       [@live, @live, @dead]
     ].flatten
 
-    assert_equal expected, game.get_neighbors(1, 1)
+    game.get_neighbors(1, 1).each_with_index do |cell, index|
+      assert cell.status == expected[index].status
+    end
 
     expected = [
       [@dead, @dead, @dead],
@@ -85,7 +87,9 @@ class GameTest < Minitest::Test
       [@dead, @dead, @dead]
     ].flatten
 
-    assert_equal expected, game.get_neighbors(3, 3)
+    game.get_neighbors(3, 3).each_with_index do |cell, index|
+      assert cell.status == expected[index].status
+    end
   end
 
   def test_can_count_neighbors
@@ -152,9 +156,11 @@ class GameTest < Minitest::Test
       [@dead, @dead, @live, @dead],
       [@live, @dead, @dead, @dead],
       [@live, @dead, @dead, @dead]
-    ]
+    ].flatten
 
-    assert_equal expected, game.grid
+    game.grid.flatten.each_with_index do |cell, index|
+      assert cell.status == expected[index].status
+    end
 
     game.next_generation
 
@@ -163,9 +169,11 @@ class GameTest < Minitest::Test
       [@dead, @dead, @live, @dead],
       [@dead, @live, @dead, @dead],
       [@dead, @dead, @dead, @dead]
-    ]
+    ].flatten
 
-    assert_equal expected, game.grid
+    game.grid.flatten.each_with_index do |cell, index|
+      assert cell.status == expected[index].status
+    end
   end
 
   def test_outputs_cells

@@ -11,13 +11,16 @@ class Game
   def initialize(width, height)
     @grid = Array.new(height) do
       Array.new(width) do
-        rand(2)
+        status = rand(2).zero? ? :dead : :alive
+        Cell.new(status)
       end
     end
   end
 
   def neighbors(cell_x, cell_y)
-    get_neighbors(cell_x, cell_y).count(1)
+    get_neighbors(cell_x, cell_y).select do |cell|
+      cell.status == :alive
+    end.length
   end
 
   def get_neighbors(cell_x, cell_y)
@@ -60,8 +63,8 @@ class Game
   def next_generation
     @grid = @grid.map.with_index do |row, y|
       row.map.with_index do |cell, x|
-        cell = 0 unless will_live?(x, y)
-        cell = 1 if reproduces?(x, y)
+        cell.die unless will_live?(x, y)
+        cell.live if reproduces?(x, y)
         cell
       end
     end
@@ -70,7 +73,7 @@ class Game
   def output_grid
     @grid.map do |row|
       row.map do |cell|
-        if cell == 1
+        if cell.alive?
           '*'
         else
           ' '

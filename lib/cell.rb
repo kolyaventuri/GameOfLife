@@ -15,4 +15,8 @@ class Cell
   def live
     @status = :alive
   end
+
+  def alive?
+    @status == :alive
+  end
 end
