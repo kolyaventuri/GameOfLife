@@ -1,3 +1,5 @@
+require 'pry'
+
 class Game
 
   attr_accessor :grid
@@ -29,6 +31,30 @@ class Game
     end
 
     num_neighbors
+  end
+
+  def get_neighbors(cell_x, cell_y)
+    dirs = [-1, 0, 1]
+    grid = []
+
+    dirs.each do |dir_y|
+      dirs.each do |dir_x|
+        grid << get_cell(cell_x, cell_y, dir_x, dir_y)
+      end
+    end
+
+    grid
+  end
+
+  def get_cell(look_from_x, look_from_y, dir_x, dir_y)
+    y_coord = look_from_y + dir_y
+    x_coord = look_from_x + dir_x
+
+    return 0 if y_coord < 0 || y_coord >= @grid.length
+    return 0 if x_coord < 0 || x_coord >= @grid[0].length
+    return 'x' if x_coord == look_from_x && y_coord == look_from_y
+
+    @grid[y_coord][x_coord]
   end
 
   def will_live?(x, y)
