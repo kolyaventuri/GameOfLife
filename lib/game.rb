@@ -73,11 +73,7 @@ class Game
   def output_grid
     @grid.map do |row|
       row.map do |cell|
-        if cell.alive?
-          '*'
-        else
-          ' '
-        end
+        cell.output
       end.join
     end.join("\n")
   end

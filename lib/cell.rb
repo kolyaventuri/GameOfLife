@@ -19,4 +19,9 @@ class Cell
   def alive?
     @status == :alive
   end
+
+  def output
+    return '*' if alive?
+    ' '
+  end
 end

@@ -27,4 +27,14 @@ class CellTest < Minitest::Test
 
     assert_equal :alive, cell.status
   end
+
+  def test_can_ouput_status
+    cell = Cell.new(:alive)
+
+    assert cell.output.include?('*')
+
+    cell.die
+
+    assert_equal ' ', cell.output
+  end
 end
