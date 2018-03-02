@@ -2,6 +2,8 @@
 
 require 'pry'
 
+require_relative 'cell'
+
 # Define grid
 class Game
   attr_accessor :grid
@@ -35,7 +37,7 @@ class Game
     x_coord = look_from_x + dir_x
     y_coord = look_from_y + dir_y
 
-    return 0 unless within_grid?(x_coord, y_coord)
+    return Cell.new(:dead) unless within_grid?(x_coord, y_coord)
     return 'x' if x_coord == look_from_x && y_coord == look_from_y
 
     @grid[y_coord][x_coord]

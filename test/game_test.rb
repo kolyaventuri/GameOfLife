@@ -3,8 +3,14 @@
 require_relative 'test_helper.rb'
 
 require './lib/game.rb'
+require './lib/cell.rb'
 
 class GameTest < Minitest::Test
+  def setup
+    @live = Cell.new(:alive)
+    @dead = Cell.new(:dead)
+  end
+
   def test_generates_grid
     game = Game.new(4, 5)
 
@@ -19,32 +25,31 @@ class GameTest < Minitest::Test
 
   def test_it_populates
     game = Game.new(4, 5)
-    possible_values = [0, 1]
 
     game.grid.each do |row|
       row.each do |cell|
-        assert_includes possible_values, cell
+        assert_instance_of Cell, cell
       end
     end
   end
 
   def test_can_get_cell_relative
     grid = [
-      [1, 0, 0, 1],
-      [0, 1, 1, 0],
-      [1, 1, 0, 0],
-      [1, 0, 1, 0]
+      [@live, @dead, @dead, @live],
+      [@dead, @live, @live, @dead],
+      [@live, @live, @dead, @dead],
+      [@live, @dead, @live, @dead]
     ]
 
     game = Game.new(0, 0)
     game.grid = grid
 
-    assert_equal 0, game.get_cell(0, 0, -1, -1)
-    assert_equal 1, game.get_cell(1, 1, -1, 1)
-    assert_equal 0, game.get_cell(1, 1, -1, 0)
-    assert_equal 0, game.get_cell(2, 3, 1, 1)
+    assert_equal :dead, game.get_cell(0, 0, -1, -1).status
+    assert_equal :alive, game.get_cell(1, 1, -1, 1).status
+    assert_equal :dead, game.get_cell(1, 1, -1, 0).status
+    assert_equal :dead, game.get_cell(2, 3, 1, 1).status
 
-    assert_equal 1, game.get_cell(1, 1, 1, 0)
+    assert_equal :alive, game.get_cell(1, 1, 1, 0).status
   end
 
   def test_can_get_within_grid
@@ -57,27 +62,27 @@ class GameTest < Minitest::Test
 
   def test_can_get_neighbors
     grid = [
-      [1, 0, 0, 1],
-      [0, 1, 1, 0],
-      [1, 1, 0, 0],
-      [1, 0, 1, 0]
+      [@live, @dead, @dead, @live],
+      [@dead, @live, @live, @dead],
+      [@live, @live, @dead, @dead],
+      [@live, @dead, @live, @dead]
     ]
 
     game = Game.new(0, 0)
     game.grid = grid
 
     expected = [
-      [1, 0, 0],
-      [0, 1],
-      [1, 1, 0]
+      [@live, @dead, @dead],
+      [@dead, @live],
+      [@live, @live, @dead]
     ].flatten
 
     assert_equal expected, game.get_neighbors(1, 1)
 
     expected = [
-      [0, 0, 0],
-      [1, 0],
-      [0, 0, 0]
+      [@dead, @dead, @dead],
+      [@live, @dead],
+      [@dead, @dead, @dead]
     ].flatten
 
     assert_equal expected, game.get_neighbors(3, 3)
@@ -85,10 +90,10 @@ class GameTest < Minitest::Test
 
   def test_can_count_neighbors
     grid = [
-      [1, 0, 0, 1],
-      [0, 1, 1, 0],
-      [1, 1, 0, 0],
-      [1, 0, 1, 0]
+      [@live, @dead, @dead, @live],
+      [@dead, @live, @live, @dead],
+      [@live, @live, @dead, @dead],
+      [@live, @dead, @live, @dead]
     ]
 
     game = Game.new(0, 0)
@@ -100,10 +105,10 @@ class GameTest < Minitest::Test
 
   def test_they_live_or_die
     grid = [
-      [1, 0, 0, 1],
-      [0, 1, 1, 0],
-      [1, 1, 0, 0],
-      [1, 0, 1, 0]
+      [@live, @dead, @dead, @live],
+      [@dead, @live, @live, @dead],
+      [@live, @live, @dead, @dead],
+      [@live, @dead, @live, @dead]
     ]
 
     game = Game.new(0, 0)
@@ -116,10 +121,10 @@ class GameTest < Minitest::Test
 
   def test_they_reproduce
     grid = [
-      [1, 0, 0, 1],
-      [0, 1, 1, 0],
-      [1, 1, 0, 0],
-      [1, 0, 1, 0]
+      [@live, @dead, @dead, @live],
+      [@dead, @live, @live, @dead],
+      [@live, @live, @dead, @dead],
+      [@live, @dead, @live, @dead]
     ]
 
     game = Game.new(0, 0)
@@ -131,10 +136,10 @@ class GameTest < Minitest::Test
 
   def test_manipulates_cells
     grid = [
-      [1, 0, 0, 1],
-      [0, 1, 1, 0],
-      [1, 1, 0, 0],
-      [1, 0, 1, 0]
+      [@live, @dead, @dead, @live],
+      [@dead, @live, @live, @dead],
+      [@live, @live, @dead, @dead],
+      [@live, @dead, @live, @dead]
     ]
 
     game = Game.new(0, 0)
@@ -143,10 +148,10 @@ class GameTest < Minitest::Test
     game.next_generation
 
     expected = [
-      [0, 1, 1, 0],
-      [0, 0, 1, 0],
-      [1, 0, 0, 0],
-      [1, 0, 0, 0]
+      [@dead, @live, @live, @dead],
+      [@dead, @dead, @live, @dead],
+      [@live, @dead, @dead, @dead],
+      [@live, @dead, @dead, @dead]
     ]
 
     assert_equal expected, game.grid
@@ -154,10 +159,10 @@ class GameTest < Minitest::Test
     game.next_generation
 
     expected = [
-      [0, 1, 1, 0],
-      [0, 0, 1, 0],
-      [0, 1, 0, 0],
-      [0, 0, 0, 0]
+      [@dead, @live, @live, @dead],
+      [@dead, @dead, @live, @dead],
+      [@dead, @live, @dead, @dead],
+      [@dead, @dead, @dead, @dead]
     ]
 
     assert_equal expected, game.grid
@@ -165,10 +170,10 @@ class GameTest < Minitest::Test
 
   def test_outputs_cells
     grid = [
-      [1, 0, 0, 1],
-      [0, 1, 1, 0],
-      [1, 1, 0, 0],
-      [1, 0, 1, 0]
+      [@live, @dead, @dead, @live],
+      [@dead, @live, @live, @dead],
+      [@live, @live, @dead, @dead],
+      [@live, @dead, @live, @dead]
     ]
 
     game = Game.new(0, 0)
