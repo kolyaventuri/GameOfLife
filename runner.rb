@@ -9,7 +9,9 @@ rows, cols = winsize
 game = Game.new(cols - 1, rows - 5)
 
 1000.times do |n|
-  system 'clear'
+  rows.times do
+    puts ''
+  end
   puts "Generation #{n} of 1000\n\n"
   puts game.output_grid
   game.next_generation
