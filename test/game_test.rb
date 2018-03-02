@@ -45,6 +45,14 @@ class GameTest < Minitest::Test
     assert_equal 1, game.get_cell(1, 1, 1, 0)
   end
 
+  def test_can_get_within_grid
+    game = Game.new(5, 5)
+
+    assert game.within_grid?(2, 2)
+    refute game.within_grid?(-1, 2)
+    refute game.within_grid?(2, 6)
+  end
+
   def test_can_get_neighbors
     grid = [
       [1, 0, 0, 1],
