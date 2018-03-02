@@ -1,6 +1,12 @@
 require './lib/game'
+require 'io/console'
+def winsize
+  IO.console.winsize
+end
 
-game = Game.new(40, 40)
+rows, cols = winsize
+
+game = Game.new(cols - 1, rows - 5)
 
 1000.times do |n|
   system 'clear'
