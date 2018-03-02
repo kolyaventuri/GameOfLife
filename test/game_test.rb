@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require_relative 'test_helper.rb'
 
 require './lib/game.rb'
@@ -24,6 +26,61 @@ class GameTest < Minitest::Test
         assert_includes possible_values, cell
       end
     end
+  end
+
+  def test_can_get_cell_relative
+    grid = [
+      [1, 0, 0, 1],
+      [0, 1, 1, 0],
+      [1, 1, 0, 0],
+      [1, 0, 1, 0]
+    ]
+
+    game = Game.new(0, 0)
+    game.grid = grid
+
+    assert_equal 0, game.get_cell(0, 0, -1, -1)
+    assert_equal 1, game.get_cell(1, 1, -1, 1)
+    assert_equal 0, game.get_cell(1, 1, -1, 0)
+    assert_equal 0, game.get_cell(2, 3, 1, 1)
+
+    assert_equal 1, game.get_cell(1, 1, 1, 0)
+  end
+
+  def test_can_get_within_grid
+    game = Game.new(5, 5)
+
+    assert game.within_grid?(2, 2)
+    refute game.within_grid?(-1, 2)
+    refute game.within_grid?(2, 6)
+  end
+
+  def test_can_get_neighbors
+    grid = [
+      [1, 0, 0, 1],
+      [0, 1, 1, 0],
+      [1, 1, 0, 0],
+      [1, 0, 1, 0]
+    ]
+
+    game = Game.new(0, 0)
+    game.grid = grid
+
+    expected = [
+      [1, 0, 0],
+      [0, 1],
+      [1, 1, 0]
+    ].flatten
+
+    assert_equal expected, game.get_neighbors(1, 1)
+
+    expected = [
+      [0, 0, 0],
+      [1, 0],
+      [0, 0, 0]
+    ].flatten
+
+    assert_equal expected, game.get_neighbors(3, 3)
   end
 
   def test_can_count_neighbors

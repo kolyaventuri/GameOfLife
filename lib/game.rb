@@ -1,5 +1,9 @@
-class Game
+# frozen_string_literal: true
 
+require 'pry'
+
+# Define grid
+class Game
   attr_accessor :grid
 
   def initialize(width, height)
@@ -11,24 +15,36 @@ class Game
   end
 
   def neighbors(cell_x, cell_y)
-    start_y = cell_y - 1
-    end_y = cell_y + 1
+    get_neighbors(cell_x, cell_y).count(1)
+  end
 
-    start_x = cell_x - 1
-    end_x = cell_x + 1
+  def get_neighbors(cell_x, cell_y)
+    dirs = [-1, 0, 1]
+    grid = []
 
-    num_neighbors = 0
-
-    for y in (start_y..end_y) do
-      next if y < 0 || y >= @grid.length
-      for x in (start_x..end_x) do
-        next if x < 0
-        next if y == cell_y && x == cell_x
-        num_neighbors += 1 if @grid[y][x] == 1
+    dirs.each do |dir_y|
+      dirs.each do |dir_x|
+        grid << get_cell(cell_x, cell_y, dir_x, dir_y)
       end
     end
 
-    num_neighbors
+    grid.reject { |cell| cell == 'x' }
+  end
+
+  def get_cell(look_from_x, look_from_y, dir_x, dir_y)
+    x_coord = look_from_x + dir_x
+    y_coord = look_from_y + dir_y
+
+    return 0 unless within_grid?(x_coord, y_coord)
+    return 'x' if x_coord == look_from_x && y_coord == look_from_y
+
+    @grid[y_coord][x_coord]
+  end
+
+  def within_grid?(x, y)
+    return false if y.negative? || y >= @grid.length
+    return false if x.negative? || x >= @grid[0].length
+    true
   end
 
   def will_live?(x, y)
