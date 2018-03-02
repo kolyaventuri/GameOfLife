@@ -1,6 +1,8 @@
+# frozen_string_literal: true
+
 require 'pry'
 
-# Within grid
+# Define grid
 class Game
   attr_accessor :grid
 
@@ -40,8 +42,8 @@ class Game
   end
 
   def within_grid?(x, y)
-    return false if y < 0 || y >= @grid.length
-    return false if x < 0 || x >= @grid[0].length
+    return false if y.negative? || y >= @grid.length
+    return false if x.negative? || x >= @grid[0].length
     true
   end
 

@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require_relative 'test_helper.rb'
 
 require './lib/game.rb'
@@ -66,7 +68,7 @@ class GameTest < Minitest::Test
 
     expected = [
       [1, 0, 0],
-      [0, 'x', 1],
+      [0, 1],
       [1, 1, 0]
     ].flatten
 
@@ -74,7 +76,7 @@ class GameTest < Minitest::Test
 
     expected = [
       [0, 0, 0],
-      [1, 'x', 0],
+      [1, 0],
       [0, 0, 0]
     ].flatten
 
